@@ -5,7 +5,7 @@ async function drawPokemon(pokemon) {
     document.title = `Pokemon - ${capitalizeFirstLetter(pokemon.name)}`;
     let descriptions = await getPokemon('pokemon-species/' + pokemon.id);
     let description = Array.from(descriptions.flavor_text_entries).filter(item => item.language.name == 'en')
-    document.getElementById('descricao').innerHTML =  description[0].flavor_text.replace('\f', ' ');
+    document.getElementById('descricao').innerHTML = description[0].flavor_text.replace('\f', ' ');
 
     document.querySelector('h1').innerHTML = `${pokemon.id.toString().padStart(3, '0')} - ${capitalizeFirstLetter(pokemon.name)}`
     document.getElementById('imgPoke').innerHTML = carousel(pokemon.sprites);
@@ -25,6 +25,41 @@ async function drawPokemon(pokemon) {
         sons.innerHTML += `<audio controls><source src="${pokemon.cries.latest}" type="audio/ogg"></audio>`
     if (pokemon.cries.legacy != null)
         sons.innerHTML += `<audio controls><source src="${pokemon.cries.legacy}" type="audio/ogg"></audio>`
+
+    const yValues = [];
+    pokemon.stats.forEach((value, index) => {
+        yValues.push(value.base_stat)
+    })
+
+    document.querySelector("#chartReport").innerHTML = '<canvas id="myChart"></canvas>';
+
+    const xValues = ["HP", "Ataque", "Defesa", "Ataque Especial", "Defesa Especial", "Velocidade"];
+    const barColors = ["#FE0000", "#EE7F30", "#F7D02C", "#F85687", "#77C755", "#678FEE"];
+    new Chart("myChart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: "Status"
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

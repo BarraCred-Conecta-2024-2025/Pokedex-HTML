@@ -56,7 +56,6 @@ async function search() {
                 </div>
                 </a>
             </div>`
-
         loading = false;
         filtered = true;
     }
